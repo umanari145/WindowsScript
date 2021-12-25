@@ -32,13 +32,24 @@ function Get-Target-Data($fileName, $account) {
     return $targetData
 }
 
-  
+function convertFile($path, $eachLine) {
+#テンプレートファイルに追加
+$templateFile = $path +'\template.txt'
+
+#filegetcontentsに近い
+$contents = Get-Content $templateFile
+
+$url = $eachLine.url
+$contents2 = $contents  -replace  "%{{url}}%","$url"
+
+$settingFile = $path + '\hogehoge.txt'
+Write-Output $contents2 > $settingFile
+
+}  
 
 #引数
 #Write-Host $Args[0]
 
 $eachLine = Get-Target-Data $fileName $Args[0]
-Write-Host $eachLine
 
-# 終了
-Write-Host("終了")
+convertFile $path $eachLine
