@@ -1,0 +1,46 @@
+if (Windows.Aurguments.length == 0)
+{
+    WScript.Echo("à¯êîÇ™Ç†ÇËÇ‹ÇπÇÒÅB");
+    WScript.Quit();
+}
+
+var itemName = WScript.Aurguments.Item(0)
+
+var ws =WScript.CreateObject("WScript.Shell");
+var fso = new ActiveXObject("Scripting.FileSystemObject");
+var script_path = WScript.ScriptFullName;
+var cwd = fso.GetParentFolderName(script_path);
+
+var excel = WScript.CreateObject("Excel.Application");
+excel.Visible = true;
+excel.Workbooks.Open(itemName);
+
+var book = excel.Workbooks(excel.Workbooks.Count);
+var xlMaximized = -4137
+excel.ActiveWindow.WindowState = xlMaximized;
+var sheets = book.WorkSheets;
+var e = new Enumerator(sheets);
+var arr_sheets = [];
+
+for (; ! e.atEnd(); e.moveNext())
+{
+    var sheet = e.item();
+    arr_sheets.push(sheet);
+}
+
+for(var i =0; i < arr_sheets.length; i++)
+{
+    excel.Workbooks.Add();
+    var new_book = excel.Workbooks(excel.Workbooks.Count);
+
+    arr_sheets[i].Copy(new_book.WorkSheets(1));
+
+    new_book.WorkSheets(2).Delete();
+    var new_filepath = cwd + "\\" + arr_sheets[i].Name + ".xlsx";
+    new_book.SaveAs(new_filepath);
+    new_book.Close();    
+}
+
+excel.Workbooks.Close();
+excel.Quit();
+WScript.Echo("èIóπÇµÇ‹ÇµÇΩÅB");
